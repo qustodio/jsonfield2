@@ -41,6 +41,8 @@ class JSONFieldMixin(models.Field):
 
         if not isinstance(value, (str, bytes, bytearray)):
             return value
+        if isinstance(value, bytes):
+            value = value.decode('utf-8')
 
         try:
             return json.loads(value, **self.load_kwargs)
@@ -50,6 +52,8 @@ class JSONFieldMixin(models.Field):
     def from_db_value(self, value, expression, connection):
         if value is None:
             return None
+        if isinstance(value, bytes):
+            value = value.decode('utf-8')
         return json.loads(value, **self.load_kwargs)
 
     def get_prep_value(self, value):
